@@ -1,0 +1,86 @@
+DATASET:	https://data.europa.eu/data/datasets/96a8a41e-b5ff-4cda-8bce-5fc1bcf43db9?locale=en
+
+Lebensweltlich orientierte Räume(LOR) = Spaces oriented towards everyday life
+
+
+
+nummer des Bezirks	1-12	number of the district
+
+nummer des Prognoseraums PGR	10-X0	number of the forecast room
+
+nummer der bezirksregion	BZR		01-XX	number of the district region
+
+nummer des Planungraums	PLR		1 bis XX	number of the planning room
+je Bezirk fortlaufend von 	per district continuously from
+
+bezirk_id:bezirk_name
+1:Mitte
+2:Friedrichshain-Kreuzberg
+3:Pankow
+4:Charlottenburg-Wilmersdorf
+5:Spandau
+6:Steglitz-Zehlendorf
+7:Tempelhof-Schöneberg
+8:Neukölln
+9:Treptow-Köpenick
+10:Marzahn-Hellersdorf
+11:Lichtenberg
+12:Reinickendorf
+-------------------------------------------------------------------------------------
+ANGELEGT_AM: Created at (date) - The date when the record was created.
+TATZEIT_ANFANG_DATUM: Start date of the crime event.
+TATZEIT_ANFANG_STUNDE: Start hour of the crime event.
+TATZEIT_ENDE_DATUM: End date of the crime event.
+TATZEIT_ENDE_STUNDE: End hour of the crime event.
+LOR: Lebensweltlich orientierte Räume - Contextual Living Spaces.
+SCHADENSHOEHE: Damage amount - The value of the damage caused.
+VERSUCH: Attempt - Whether the crime was an attempt
+ART_DES_FAHRRADS: Type of bicycle - Specifies the type or category of the bicycle (e.g., Herrenfahrrad - Men's bicycle, Kinderfahrrad - Children's bicycle).
+DELIKT: Offense - Describes the type of offense (e.g., Fahrraddiebstahl - Bicycle theft).
+ERFASSUNGSGRUND: Reason for recording - Indicates the reason for recording the data.
+DISTRICT_NUMBER: District number - A numerical identifier for the district.
+PGR_FORECAST_ROOM: PGR Forecast Room - Part of the planning and forecasting system, possibly related to the district.
+BZR_DISTRICT_REGION: BZR District Region - District region information.
+PLR_PLANNING_ROOM_NUMBER: PLR Planning Room Number - Number associated with the planning room.
+DISTRICT_NAME: District name - The name of the district in Berlin where the crime event occurred.
+-------------------------------------------------------------------------------------
+
+ERFASSUNGSGRUND/Reason for recording
+Sonstiger schwerer Diebstahl von Fahrrädern: 						Other serious theft of bicycles.
+Einfacher Diebstahl von Fahrrädern: 								Simple theft of bicycles.
+Sonstiger schwerer Diebstahl in/aus Keller/Boden von Fahrrädern: 	Other serious theft from/within cellar/floor of bicycles.
+Einfacher Diebstahl aus Keller/Boden von Fahrrädern: 				Simple theft from cellar/floor of bicycles.
+
+=====================================================================================
+DISTRICT_NUMBER			=IF(LEN(F2) = 8, LEFT(F2,2), LEFT(F2,1))
+PGR_FORECAST_ROOM		=IF(LEN(F2) = 8, MID(F2,3,2), MID(F2,2,2))
+BZR_DISTRICT_REGION		=IF(LEN(F2) = 8, MID(F2,5,2), MID(F2,4,2))
+PLR_PLANNING_ROOM_NUMBER=RIGHT(F2,2)
+
+FORMATTED TO NUMBERS USING DATA>TEXT TO COLUMN, FINISHING THE WIZARD
+DISTRICT_NAME	=REPLACED INDIVIDUAL COLUMNS WITH NAMES OF THE DISTRICT
+=====================================================================================
+
+=====================================================================================
+pd.set_option('display.max_columns', None)
+
+df['RecordedDay'] = pd.to_datetime(df['RECORDED_ON'], format="%d.%m.%Y").dt.day.astype(int)
+df['RecordedMonth'] = pd.to_datetime(df['RECORDED_ON'], format="%d.%m.%Y").dt.month_name()
+df['RecordedYear'] = pd.to_datetime(df['RECORDED_ON'], format="%d.%m.%Y").dt.year.astype(int)
+df['RecordedWeek'] =  pd.to_datetime(df['RECORDED_ON'], format="%d.%m.%Y").dt.day_name()
+
+df['CrimeStartDay'] = pd.to_datetime(df['CRIME_START_DATE'], format="%d.%m.%Y").dt.day.astype(int)
+df['CrimeStartMonth'] = pd.to_datetime(df['CRIME_START_DATE'], format="%d.%m.%Y").dt.month_name()
+df['CrimeStartYear'] = pd.to_datetime(df['CRIME_START_DATE'], format="%d.%m.%Y").dt.year.astype(int)
+df['CrimeStartWeek'] =  pd.to_datetime(df['CRIME_START_DATE'], format="%d.%m.%Y").dt.day_name()
+
+df['CrimeEndDay'] = pd.to_datetime(df['CRIME_END_DATE'], format="%d.%m.%Y").dt.day.astype(int)
+df['CrimeEndMonth'] = pd.to_datetime(df['CRIME_END_DATE'], format="%d.%m.%Y").dt.month_name()
+df['CrimeEndYear'] = pd.to_datetime(df['CRIME_END_DATE'], format="%d.%m.%Y").dt.year.astype(int)
+df['CrimeEndWeek'] =  pd.to_datetime(df['CRIME_END_DATE'], format="%d.%m.%Y").dt.day_name()
+
+
+
+#Week information
+
+df.head()
